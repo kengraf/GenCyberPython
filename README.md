@@ -8,8 +8,9 @@ Three (3) lessons are provided.  The lesson notebooks provide step-by-step instr
 2) Using steganography with images
 3) Using Oath (GoogleAuthenicator) tokens
 
-Click on the binder button below.  This is take a minute or so to establish an IPython
+Click on the binder button below.  Startup takes a minute or so to establish an IPython
 environment.  Then click on the lesson you would like to run.  Feel free to play/alter the steps
-in the lessons you will be working a temporary sandbox, so none your actions are saved.
+in the lessons.  You will be working a temporary sandbox, so none your actions are saved or
+impact anyones work.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/GenCyberPython/HEAD)
