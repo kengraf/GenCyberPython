@@ -4,7 +4,7 @@
 
 # Read/Write images using OpenCV-Python.
 # It is a library of Python bindings designed to solve computer vision problems. 
-import cv2
+from PIL import Image
 import numpy
 
 EOM = "<EOM>" # you can use any string as the end of message delimeter
@@ -20,10 +20,14 @@ def messageToBinary(message):
         raise TypeError("Input type not supported")
 
 
-def hideData(image, secret_message, key):
+# hide 'data' in 'image_name' 
+# 'key' format is 'XY', X = is R,G, or B: Y is bit position 1 for LSB
+def encode(image_name, secret_message, key):
+    
+    image = Image.open(image_name)
 
     # calculate the maximum bytes to encode
-    n_bytes = image.shape[0] * image.shape[1] * 3 // 8
+    n_bytes = image.height * image.width * 3 // 8
     print("Maximum bytes to encode:", n_bytes)
 
     #Check if the number of bytes to encode is less than the maximum bytes in the image
@@ -39,43 +43,53 @@ def hideData(image, secret_message, key):
     binary_secret_msg = messageToBinary(secret_message)
 
     data_len = len(binary_secret_msg) #Find the length of data that needs to be hidden
-    for values in image:
-        for pixel in values:
+    for x in range(0, image.width):
+        for y in range(0, image.height):
+            pixel = list(image.getpixel((x, y)))
             # Break out of the loop once all the data is encoded
             if data_index >= data_len:
                 break
             
             # convert RGB values to binary format
-            r, g, b = messageToBinary(pixel)
+#            r, g, b = messageToBinary(pixel)
 
             if( keyColor == 'R' or keyColor == 'r' ):
-                x = r[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
-                pixel[0] = int(x, 2)
+                r = messageToBinary(pixel[0])
+                xx = r[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
+                pixel[0] = int(xx, 2)
             if( keyColor == 'G' or keyColor == 'g' ):
-                x = g[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
-                pixel[1] = int(x, 2)
+                g = messageToBinary(pixel[1])
+                xx = g[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
+                pixel[1] = int(xx, 2)
             if( keyColor == 'B' or keyColor == 'b' ):
-                x = b[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
-                pixel[2] = int(x, 2)
+                b = messageToBinary(pixel[2])
+                xx = b[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
+                pixel[2] = int(xx, 2)
                 
             data_index += 1
+            image.putpixel((x,y), tuple(pixel))
             
     return image
 
-def showData(image, key):
+def decode(image_name, key):
+
+    image = Image.open(image_name)
 
     binary_data = ""
     keyColor = key[0]
     keyBit = 8 - int(key[1])
     
-    for values in image:
-        for pixel in values:
-            r, g, b = messageToBinary(pixel)
+    for x in range(0, image.width):
+        for y in range(0, image.height):
+            pixel = list(image.getpixel((x, y)))
             if( keyColor == 'R' or keyColor == 'r' ):
+                r = messageToBinary(pixel[0])
                 binary_data += r[keyBit]
             if( keyColor == 'G' or keyColor == 'g' ):
+                g = messageToBinary(pixel[0])
                 binary_data += g[keyBit]
             if( keyColor == 'B' or keyColor == 'b' ):
+                b = messageToBinary(pixel[0])
                 binary_data += b[keyBit]
 
     # convert from bits to characters
@@ -89,29 +103,9 @@ def showData(image, key):
     # remove the delimeter and return the original hidden message
     return decoded_data[:-5] 
 
-# hide 'data' in 'image_name' 
-# 'key' format is 'XY', X = is R,G, or B: Y is bit position 1 for LSB
-def encode(image_name, data, key): 
-    image = cv2.imread(image_name) 
-
-    #details of the image
-    print("The shape of the image is: ",image.shape) #check the shape of image to calculate the number of bytes in it
-
-    if (len(data) == 0): 
-        raise ValueError('Data is empty')
-
-    encoded_image = hideData(image, data, key) # call the hideData function to hide the secret message into the selected image
-    return encoded_image
-    
-# Decode image
-def decode(image_name, key ):
-    image = cv2.imread(image_name) #read the image
-    text = showData(image, key)
-    return text
-
-# wirte the encoded image data to filename
+# write the encoded image data to filename
 def write(filename, encoded_image ):
-    return cv2.imwrite(filename, encoded_image)
+    return encoded_image.save(filename)
     
     
 # Try simple message on small image, changing the low red bit
@@ -122,7 +116,7 @@ def selfTest():
     key = 'R1'
     
     secretData = encode( coverFilename, message, key )
-    if( len(secretData) == 0 ): return False
+    if( secretData == 0 ): return False
     
     success = write(secretFilename, secretData )
     if( success == False ):
