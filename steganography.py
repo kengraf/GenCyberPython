@@ -51,8 +51,6 @@ def encode(image_name, secret_message, key):
                 break
             
             # convert RGB values to binary format
-#            r, g, b = messageToBinary(pixel)
-
             if( keyColor == 'R' or keyColor == 'r' ):
                 r = messageToBinary(pixel[0])
                 xx = r[:keyBit] + binary_secret_msg[data_index] + r[keyBit+1:];
@@ -86,10 +84,10 @@ def decode(image_name, key):
                 r = messageToBinary(pixel[0])
                 binary_data += r[keyBit]
             if( keyColor == 'G' or keyColor == 'g' ):
-                g = messageToBinary(pixel[0])
+                g = messageToBinary(pixel[1])
                 binary_data += g[keyBit]
             if( keyColor == 'B' or keyColor == 'b' ):
-                b = messageToBinary(pixel[0])
+                b = messageToBinary(pixel[2])
                 binary_data += b[keyBit]
 
     # convert from bits to characters
