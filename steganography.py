@@ -6,6 +6,7 @@
 # It is a library of Python bindings designed to solve computer vision problems. 
 from PIL import Image
 import numpy
+import os
 
 EOM = "<EOM>" # you can use any string as the end of message delimeter
 
@@ -26,11 +27,8 @@ def encode(image_name, secret_message, key):
     
     image = Image.open(image_name)
 
-    # calculate the maximum bytes to encode
-    n_bytes = image.height * image.width * 3 // 8
-    print("Maximum bytes to encode:", n_bytes)
-
     #Check if the number of bytes to encode is less than the maximum bytes in the image
+    n_bytes = image.height * image.width * 3 // 8
     if len(secret_message) > n_bytes:
         raise ValueError("Error encountered insufficient bytes, need bigger image or less data !!")
 
@@ -103,14 +101,14 @@ def decode(image_name, key):
 
 # write the encoded image data to filename
 def write(filename, encoded_image ):
-    return encoded_image.save(filename)
+    return encoded_image.save(filename,'png')
     
     
 # Try simple message on small image, changing the low red bit
-def selfTest(): 
+def selfTest2(): 
     message = "Into the valley of death rode the 600 hundred"
     coverFilename = "Charge600.jpg"
-    secretFilename = "secret.png"
+    secretFilename = "secret.jpg"
     key = 'R1'
     
     secretData = encode( coverFilename, message, key )
@@ -125,6 +123,30 @@ def selfTest():
     dtext = decode( secretFilename, key )
     return dtext == message
 
+def selfTest():
+    types = ("png","jpeg","bmp")
+    channel = ("R","G","B")
+    testNum = 0
+    secret = "test secret message"
+    
+    for t in types:
+        img = Image.new("RGB", (100,100))
+        fileT = "test."+t
+        img.save(fileT, format=t)
+        for o in types:
+            fileO = "secret."+o
+            key = channel[testNum%3] + str(testNum%8+1)
+            i = encode(fileT, secret, key)
+            write(fileO, i)
+            pText = decode(fileO, key)
+            result = ": Passed" if secret == pText else ": Failed"
+            print("Test " + t + "->" + o + result )
+            if secret != pText:
+                return False
+            os.remove(fileO)
+        os.remove(fileT)
+    return True
+            
 # Module test code
 if __name__ == "__main__":
-    print( "Tests passed" if selfTest() else "Failed" )
+    print( "Tests passed" if selfTest2() else "Failed" )
