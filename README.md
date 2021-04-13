@@ -2,16 +2,16 @@
 This repo supports a day of hands-on Python security coding.  
 The audience isn't expected to be programming or security knowledgeable.
 
-Four (4) lessons are provided.  The lesson notebooks provide step-by-step instructions.
+Four (4) lessons are provided in separate repos.  The lesson notebook provides step-by-step instructions.
 
-1) Intro to Linux command line
-2) Using a railfence cipher
-3) Using steganography with images
-4) Using Oath (GoogleAuthenicator like) tokens [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/TOTP/HEAD)
+1) Intro to Linux command line [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/LinuxCommand/HEAD)
 
-Click on the launch binder button below.  Startup takes a minute or so to establish an IPython
-environment.  Then click on the lesson you would like to run.  Feel free to play/alter the steps
-in the lessons.  You will be working a temporary sandbox, so none your actions are saved or
-can impact anyone.
+2) Using a railfence cipher [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/Railfence/HEAD)
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/GenCyberPython/HEAD)
+3) Image based steganography [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/Steganography/HEAD)
+
+4) TOTP (GoogleAuthenicator like) tokens [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kengraf/TOTP/HEAD)
+
+The startup of Binder.org takes a minute or so to establish an IPython
+environment.  Then click on the lesson link ".ipynb: you would like to run.  Feel free to play/alter the steps
+in the lessons.  You will be working a temporary sandbox, so can not damage the original lesson.
